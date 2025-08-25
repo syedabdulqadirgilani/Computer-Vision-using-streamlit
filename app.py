@@ -1,18 +1,12 @@
-# =========================
-# Easy Streamlit + OpenCV App
-# Blur & Sketch Effects
-# Updated with latest versions
-# =========================
-
 import streamlit as st
-import cv2
+import pandas as pd
 import numpy as np
+import cv2
 from PIL import Image
 
 # App title
-st.set_page_config(page_title="Easy Blur & Sketch App", layout="centered")
-st.title("Easy Blur & Sketch App")
-st.write("Upload an image to see the sketch and blur effects!")
+st.title("Streamlit & OpenCV App")
+st.write("Upload an image")
 
 # Upload image
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
@@ -20,7 +14,7 @@ uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png
 if uploaded_file is not None:
     # Read image using PIL
     image = Image.open(uploaded_file)
-    img = np.array(image)  # Convert to OpenCV format
+    img = np.array(image)
 
     # Convert to BGR if needed
     if len(img.shape) == 2:
@@ -30,17 +24,11 @@ if uploaded_file is not None:
     else:
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
-    # --------- OpenCV Basics ----------
-    # 1️⃣ Convert to Gray
+    # OpenCV basics
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    # 2️⃣ Blur
-    blur_img = cv2.GaussianBlur(img, (21, 21), 0)
-
-    # 3️⃣ Sketch effect
+    blur_img = cv2.GaussianBlur(img, (15, 15), 0)
     invert = cv2.bitwise_not(gray)
-    blur_invert = cv2.GaussianBlur(invert, (21, 21), 0)
-    sketch = cv2.divide(gray, 255 - blur_invert, scale=256)
+    sketch = cv2.divide(gray, 255 - cv2.GaussianBlur(invert, (21, 21), 0), scale=256)
 
     # Display images
     st.subheader("Original Image")
