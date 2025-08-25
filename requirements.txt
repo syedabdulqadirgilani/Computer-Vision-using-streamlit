@@ -1,8 +1,4 @@
-streamlit
-numpy
-opencv-python
-Pillow
-streamlit-webrtc
-scipy
-matplotlib
-
+streamlit==1.30.0
+numpy==1.26.0
+opencv-python==4.8.1
+Pillow==10.1.0
