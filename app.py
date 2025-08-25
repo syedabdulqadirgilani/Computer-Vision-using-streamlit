@@ -4,12 +4,12 @@
 # Updated for latest versions
 # =========================
 
-import cv2
 import streamlit as st
 import numpy as np
+import cv2
 from PIL import Image
 
-# App title
+# App configuration
 st.set_page_config(page_title="Blur & Sketch App", layout="centered")
 st.title("Blur & Sketch App")
 st.write("Upload an image to see the sketch and blur effects!")
@@ -18,12 +18,12 @@ st.write("Upload an image to see the sketch and blur effects!")
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # Open uploaded file as PIL Image
+    # Open the uploaded image with PIL
     image = Image.open(uploaded_file)
-    img = np.array(image)  # Convert PIL Image to NumPy array (OpenCV format)
-    
-    # Ensure image is in BGR format for OpenCV
-    if len(img.shape) == 2:  # Grayscale
+    img = np.array(image)  # Convert PIL Image to NumPy array
+
+    # Handle different image formats
+    if len(img.shape) == 2:  # grayscale
         img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
     elif img.shape[2] == 4:  # RGBA
         img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
