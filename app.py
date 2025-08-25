@@ -1,13 +1,16 @@
 # =========================
 # Streamlit Computer Vision Project
 # Blur & Sketch Effect (No Face Detection)
+# Updated for latest versions
 # =========================
 
 import cv2
 import streamlit as st
 import numpy as np
+from PIL import Image
 
 # App title
+st.set_page_config(page_title="Blur & Sketch App", layout="centered")
 st.title("Blur & Sketch App")
 st.write("Upload an image to see the sketch and blur effects!")
 
@@ -15,9 +18,17 @@ st.write("Upload an image to see the sketch and blur effects!")
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # Convert uploaded file to OpenCV image
-    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    # Open uploaded file as PIL Image
+    image = Image.open(uploaded_file)
+    img = np.array(image)  # Convert PIL Image to NumPy array (OpenCV format)
+    
+    # Ensure image is in BGR format for OpenCV
+    if len(img.shape) == 2:  # Grayscale
+        img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    elif img.shape[2] == 4:  # RGBA
+        img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
+    else:  # RGB
+        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
     # --------- Sketch Effect ----------
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -30,10 +41,10 @@ if uploaded_file is not None:
 
     # Display images
     st.subheader("Original Image")
-    st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), use_column_width=True)
 
     st.subheader("Sketch Effect")
-    st.image(sketch, channels="GRAY")
+    st.image(sketch, channels="GRAY", use_column_width=True)
 
     st.subheader("Blurred Image")
-    st.image(cv2.cvtColor(blur_img, cv2.COLOR_BGR2RGB))
+    st.image(cv2.cvtColor(blur_img, cv2.COLOR_BGR2RGB), use_column_width=True)
